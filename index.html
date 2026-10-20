@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="id" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — Creative Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fdf3ee', 100: '#fae4d8', 200: '#f4c5af',
+              300: '#eda07e', 400: '#cf8f72', 500: '#bf6a45',
+              600: '#a35234', 700: '#8a4029', 800: '#713526',
+              900: '#5e2e23', 950: '#321510'
+            },
+            slate: {
+              800: '#1e1e1e', 900: '#111111', 950: '#0a0a0a'
+            }
+          },
+          fontFamily: {
+            sans: ['Space Grotesk', 'sans-serif'],
+            mono: ['Space Mono', 'monospace']
+          },
+          letterSpacing: {
+            tightest: '-0.05em'
+          },
+          animation: {
+            blob: 'blob 10s infinite',
+            float: 'float 6s ease-in-out infinite',
+            'float-delay': 'float 6s ease-in-out 2s infinite',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
+            'typewriter': 'typewriter 3s steps(20) 0.5s forwards, blink 0.75s step-end infinite',
+            'slide-up': 'slideUp 0.6s ease-out forwards',
+            'slide-down': 'slideDown 0.4s ease-out forwards',
+            'fade-in': 'fadeIn 0.8s ease-out forwards',
+            'scale-in': 'scaleIn 0.5s ease-out forwards',
+            'count-up': 'countUp 2s ease-out forwards',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0,0) scale(1)' },
+              '33%': { transform: 'translate(30px,-50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px,20px) scale(0.9)' },
+              '100%': { transform: 'translate(0,0) scale(1)' }
+            },
+            float: {
+              '0%,100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            typewriter: {
+              'from': { width: '0' },
+              'to': { width: '100%' }
+            },
+            blink: {
+              '50%': { borderColor: 'transparent' }
+            },
+            slideUp: {
+              'from': { opacity: '0', transform: 'translateY(40px)' },
+              'to': { opacity: '1', transform: 'translateY(0)' }
+            },
+            slideDown: {
+              'from': { opacity: '0', transform: 'translateY(-20px)' },
+              'to': { opacity: '1', transform: 'translateY(0)' }
+            },
+            fadeIn: {
+              'from': { opacity: '0' },
+              'to': { opacity: '1' }
+            },
+            scaleIn: {
+              'from': { opacity: '0', transform: 'scale(0.9)' },
+              'to': { opacity: '1', transform: 'scale(1)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { scrollbar-width: thin; scrollbar-color: #bf6a45 #111111; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #111111; }
+    ::-webkit-scrollbar-thumb { background: #bf6a45; border-radius: 3px; }
+    html { scroll-behavior: smooth; }
+
+    .text-glow { text-shadow: 0 0 10px rgba(191,106,69,0.3); }
+    .text-glow-lg { text-shadow: 0 0 20px rgba(191,106,69,0.4), 0 0 40px rgba(191,106,69,0.2); }
+
+    .grain {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 9999; opacity: 0.05; mix-blend-mode: overlay;
+    }
+
+    .dot-pattern {
+      background-image: radial-gradient(#2a1b15 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+    .skill-bar-fill.active {
+      /* width set via inline style */
+    }
+
+    .project-card {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .project-card.hidden-card {
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #bf6a45;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    .toast {
+      animation: slideDown 0.4s ease-out forwards;
+    }
+
+    .magnetic-btn {
+      transition: transform 0.3s ease;
+    }
+
+    @media (max-width: 767px) {
+      .hero-title { font-size: 2.5rem !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-white font-sans antialiased overflow-x-hidden">
+
+  <!-- Grain Texture -->
+  <svg class="grain">
+    <filter id="noiseFilter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#noiseFilter)"/>
+  </svg>
+
+  <!-- Background Blobs -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-1/4 -left-48 w-96 h-96 bg-brand-500/10 rounded-full blur-[100px] animate-blob mix-blend-screen"></div>
+    <div class="absolute top-3/4 -right-48 w-96 h-96 bg-brand-600/10 rounded-full blur-[100px] animate-blob mix-blend-screen" style="animation-delay:3s"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-500/5 rounded-full blur-[100px] animate-blob mix-blend-screen" style="animation-delay:6s"></div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 h-20 flex items-center transition-all duration-500">
+    <div class="max-w-7xl  mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-lg bg-brand-500 flex items-center justify-center text-slate-950 font-bold text-lg transition-shadow duration-300 group-hover:shadow-[0_0_20px_rgba(191,106,69,0.4)]">
+          F
+        </div>
+        <span class="font-mono text-sm text-slate-300 hidden sm:block">Fasly Jalal</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#about" class="nav-link text-xs uppercase tracking-widest text-slate-400 hover:text-brand-400 transition-colors duration-300">Tentang</a>
+        <a href="#skills" class="nav-link text-xs uppercase tracking-widest text-slate-400 hover:text-brand-400 transition-colors duration-300">Skilss</a>
+        <a href="#contact" class="nav-link text-xs uppercase tracking-widest text-slate-400 hover:text-brand-400 transition-colors duration-300">Kontak</a>
+        <a href="#projects" class="px-5 py-2.5 bg-brand-500 text-slate-950 text-xs font-bold uppercase tracking-wide rounded-lg hover:shadow-[0_0_20px_rgba(191,106,69,0.4)] transition-all duration-300">
+          Proyek saya
+        </a>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button id="menuToggle" class="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 group">
+        <span class="menu-line w-6 h-0.5 bg-slate-300 transition-all duration-300 group-[.open]:rotate-45 group-[.open]:translate-y-2"></span>
+        <span class="menu-line w-6 h-0.5 bg-slate-300 transition-all duration-300 group-[.open]:opacity-0"></span>
+        <span class="menu-line w-6 h-0.5 bg-slate-300 transition-all duration-300 group-[.open]:-rotate-45 group-[.open]:-translate-y-2"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="absolute top-20 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 opacity-0 -translate-y-4 pointer-events-none transition-all duration-400 md:hidden">
+      <div class="px-4 py-6 flex flex-col gap-4">
+        <a href="#about" class="mobile-link text-sm uppercase tracking-widest text-slate-400 hover:text-brand-400 py-2 transition-colors">Tentang</a>
+        <a href="#skills" class="mobile-link text-sm uppercase tracking-widest text-slate-400 hover:text-brand-400 py-2 transition-colors">Keahlian</a>
+        <a href="#projects" class="mobile-link text-sm uppercase tracking-widest text-slate-400 hover:text-brand-400 py-2 transition-colors">Proyek</a>
+        <a href="#experience" class="mobile-link text-sm uppercase tracking-widest text-slate-400 hover:text-brand-400 py-2 transition-colors">Pengalaman</a>
+        <a href="#contact" class="mobile-link mt-2 px-5 py-3 bg-brand-500 text-slate-950 text-xs font-bold uppercase tracking-wide rounded-lg text-center">Hubungi Saya</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center pt-36 lg:pt-48 pb-24 lg:pb-32 px-4">
+    <div class="dot-pattern absolute inset-0 opacity-30"></div>
+    <div class="relative z-10 text-center max-w-5xl mx-auto">
+      <!-- Badge -->
+      <!-- Main Title -->
+      <h1 class="hero-title text-5xl sm:text-6xl lg:text-8xl font-bold leading-[0.9] tracking-tightest mb-6 opacity-0 animate-slide-up" style="animation-delay:0.4s;animation-fill-mode:forwards">
+        <span class="text-white">Halo, Saya</span><br>
+        <span class="text-brand-500 text-glow-lg">Fasly Jalal</span>
+      </h1>
+
+      <!-- Typing Subtitle -->
+      <div class="h-8 mb-8 opacity-0 animate-fade-in" style="animation-delay:0.8s;animation-fill-mode:forwards">
+        <p class="font-mono text-sm text-slate-400">
+          <span class="text-brand-400"></span>
+          <span id="typedText"></span><span class="animate-pulse text-brand-400">|</span>
+        </p>
+      </div>
+
+      <!-- Description -->
+      <p class="text-sm sm:text-base text-slate-400 font-mono max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 animate-fade-in" style="animation-delay:1s;animation-fill-mode:forwards">
+        Mengubah ide menjadi pengalaman digital yang memukau.
+        <br class="hidden sm:block">
+        Fokus pada desain yang bersih, performa tinggi, dan interaksi yang bermakna.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 animate-slide-up" style="animation-delay:1.2s;animation-fill-mode:forwards">
+        <a href="#projects" class="magnetic-btn group px-8 py-3.5 bg-brand-500 text-slate-950 text-xs font-bold uppercase tracking-wide rounded-lg hover:shadow-[0_0_30px_rgba(191,106,69,0.5)] transition-all duration-300 flex items-center gap-2">
+          Lihat Karya
+          <iconify-icon icon="lucide:arrow-down" class="text-base group-hover:translate-y-0.5 transition-transform"></iconify-icon>
+        </a>
+      </div>
+
+      <!-- Stats Row -->
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="relative py-24 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        <!-- Image -->
+        <div class="lg:col-span-5 scroll-reveal">
+          <div class="relative group">
+            <div class="absolute -inset-4 bg-gradient-to-br from-brand-500/20 to-transparent rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div class="relative rounded-2xl overflow-hidden border border-slate-800/60 aspect-[4/5]">
+              <img src="Img/WhatsApp Image 2026-10-19 at 20.22.17.jpeg" alt="Alex Rahman" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+              <!-- Floating Badge -->
+              <div class="absolute bottom-6 left-6 right-6 p-4 bg-slate-900/80 backdrop-blur-xl rounded-xl border border-slate-800/60">
+              </div>
+            </div>
+            <!-- Decorative Elements -->
+            <div class="absolute -top-4 -right-4 w-20 h-20 border border-brand-500/20 rounded-xl animate-float"></div>
+            <div class="absolute -bottom-4 -left-4 w-16 h-16 border border-brand-500/10 rounded-lg animate-float-delay"></div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="lg:col-span-7 scroll-reveal" style="transition-delay: 0.2s">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="h-px w-8 bg-brand-500"></div>
+            <span class="text-xs font-mono text-brand-400 uppercase tracking-widest">Tentang Saya</span>
+          </div>
+          <h2 class="text-3xl lg:text-4xl font-bold tracking-tight mb-6">
+            Membangun <span class="text-brand-400 text-glow">pengalaman digital</span> yang bermakna
+          </h2>
+          <div class="space-y-4 text-sm text-slate-400 font-mono leading-relaxed mb-8">
+            <p>
+              Sebagai siswa PPLG yang berfokus pada pengembangan perangkat lunak, saya percaya bahwa proses belajar tidak pernah berhenti. Saya menikmati proses memecahkan masalah melalui kode dan merancang antarmuka yang fungsional. Melalui program PKL ini, saya antusias untuk mendapatkan pengalaman kerja langsung, belajar dari para profesional di industri, serta memberikan kontribusi terbaik bagi tim.            </p>
+          </div>
+
+          <!-- Info Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <div class="p-4 rounded-xl border border-slate-800/60 bg-slate-900/50 hover:border-brand-500/30 transition-colors duration-300">
+              <iconify-icon icon="lucide:map-pin" class="text-brand-500 text-lg mb-2"></iconify-icon>
+              <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Lokasi</div>
+              <div class="text-sm text-slate-300">Ende, NTT</div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-800/60 bg-slate-900/50 hover:border-brand-500/30 transition-colors duration-300">
+              <iconify-icon icon="lucide:graduation-cap" class="text-brand-500 text-lg mb-2"></iconify-icon>
+              <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Pendidikan</div>
+              <div class="text-sm text-slate-300">Madrasah Aliyah Kejuruan Negri</div>
+            </div>
+          </div>
+
+          <a href="CV_FaslyJalal.docx" class="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 text-slate-300 hover:text-brand-300 text-xs font-bold uppercase tracking-wide transition-colors group">
+            Unduh CV
+            <iconify-icon icon="lucide:download" class="text-base group-hover:translate-y-0.5 transition-transform"></iconify-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills" class="relative py-24 px-4">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal">
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <div class="h-px w-8 bg-brand-500"></div>
+          <span class="text-xs font-mono text-brand-400 uppercase tracking-widest">Keahlian</span>
+          <div class="h-px w-8 bg-brand-500"></div>
+        </div>
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tight mb-4">
+          My <span class="text-brand-400 text-glow">Skills</span>
+        </h2>
+        <p class="text-sm text-slate-400 font-mono">Teknologi yang saya gunakan sehari-hari untuk membangun produk digital</p>
+      </div>
+
+      <!-- Skills Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+        <!-- Frontend -->
+        <div class="p-6 rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm hover:border-brand-500/30 hover:shadow-[0_0_15px_rgba(191,106,69,0.1)] transition-all duration-300 scroll-reveal">
+          <div class="flex items-center gap-3 mb-6">
+          
+            <div>
+              <h3 class="text-lg font-bold">Language</h3>
+              <p class="text-xs text-slate-500 font-mono">Website</p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Html</span><span class="text-brand-400 font-mono">95%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="95"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Css</span><span class="text-brand-400 font-mono">90%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="90"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">JavaScript</span><span class="text-brand-400 font-mono">85%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="80"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Php</span><span class="text-brand-400 font-mono">70%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="70"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backend -->
+        <!-- <div class="p-6 rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm hover:border-brand-500/30 hover:shadow-[0_0_15px_rgba(191,106,69,0.1)] transition-all duration-300 scroll-reveal" style="transition-delay:0.1s">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/30 flex items-center justify-center">
+              <iconify-icon icon="lucide:server" class="text-brand-400 text-lg"></iconify-icon>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold">Backend</h3>
+              <p class="text-xs text-slate-500 font-mono">API & Database</p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Node.js / Express</span><span class="text-brand-400 font-mono">90%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="90"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">PostgreSQL / MongoDB</span><span class="text-brand-400 font-mono">85%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="85"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Python / Django</span><span class="text-brand-400 font-mono">75%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="75"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">GraphQL</span><span class="text-brand-400 font-mono">78%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="78"></div></div>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Design -->
+        <div class="p-6 rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm hover:border-brand-500/30 hover:shadow-[0_0_15px_rgba(191,106,69,0.1)] transition-all duration-300 scroll-reveal" style="transition-delay:0.2s">
+          <div class="flex items-center gap-3 mb-6">
+            <div>
+              <h3 class="text-lg font-bold">Design Tools</h3>
+              <p class="text-xs text-slate-500 font-mono">UI/UX & Visual</p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Figma</span><span class="text-brand-400 font-mono">93%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="93"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Balsamiq</span><span class="text-brand-400 font-mono">80%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="80"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DevOps -->
+        <!-- <div class="p-6 rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm hover:border-brand-500/30 hover:shadow-[0_0_15px_rgba(191,106,69,0.1)] transition-all duration-300 scroll-reveal" style="transition-delay:0.3s">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/30 flex items-center justify-center">
+              <iconify-icon icon="lucide:cloud" class="text-brand-400 text-lg"></iconify-icon>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold">DevOps & Tools</h3>
+              <p class="text-xs text-slate-500 font-mono">Deploy & Workflow</p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Docker / K8s</span><span class="text-brand-400 font-mono">82%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="82"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">AWS / Vercel</span><span class="text-brand-400 font-mono">88%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="88"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">CI/CD Pipeline</span><span class="text-brand-400 font-mono">85%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="85"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span class="text-slate-300">Git / GitHub</span><span class="text-brand-400 font-mono">95%</span></div>
+              <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="skill-bar-fill h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full" data-width="95"></div></div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+
+      <!-- Tech Logo Strip -->
+      <!-- <div class="flex flex-wrap items-center justify-center gap-6 opacity-40 scroll-reveal">
+        <iconify-icon icon="logos:react" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:nextjs-icon" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:typescript-icon" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:tailwindcss-icon" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:nodejs-icon" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:postgresql" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:docker-icon" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:figma" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:aws" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+        <iconify-icon icon="logos:python" class="text-3xl grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"></iconify-icon>
+      </div> -->
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects" class="relative py-24 px-4">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="text-center max-w-3xl mx-auto mb-12 scroll-reveal">
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <div class="h-px w-8 bg-brand-500"></div>
+          <span class="text-xs font-mono text-brand-400 uppercase tracking-widest">Proyek</span>
+          <div class="h-px w-8 bg-brand-500"></div>
+        </div>
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tight mb-4">
+          Proyek
+        </h2>
+        <p class="text-sm text-slate-400 font-mono">Beberapa proyek yang saya bangun dengan penuh dedikasi</p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex items-center justify-center gap-2 mb-12 scroll-reveal flex-wrap">
+        <button class="filter-btn active px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-300" data-filter="all">Semua</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Project 1 -->
+        <div class="project-card group relative rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm overflow-hidden hover:border-brand-500/30 hover:shadow-[0_0_30px_rgba(191,106,69,0.15)] transition-all duration-500 scroll-reveal" data-category="web">
+          <div class="aspect-video overflow-hidden relative">
+            <img src="https://picsum.photos/seed/project-ecommerce/800/450.jpg" alt="E-Commerce Platform" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+            <!-- Overlay Actions -->
+            <div class="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <a href="#" class="w-10 h-10 rounded-full bg-brand-500 text-slate-950 flex items-center justify-center hover:shadow-[0_0_15px_rgba(191,106,69,0.5)] transition-all">
+                <iconify-icon icon="lucide:external-link" class="text-sm"></iconify-icon>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-full bg-slate-800/80 backdrop-blur-sm text-white flex items-center justify-center border border-slate-700 hover:border-brand-500/50 transition-all">
+                <iconify-icon icon="lucide:github" class="text-sm"></iconify-icon>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-brand-400 bg-brand-500/10 rounded border border-brand-500/20">Web App</span>
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500 bg-slate-800 rounded border border-slate-700">2024</span>
+            </div>
+            <h3 class="text-lg font-bold font-mono mb-2 group-hover:text-brand-400 transition-colors">ShopVerse</h3>
+            <p class="text-xs text-slate-400 font-mono leading-relaxed line-clamp-2">Platform e-commerce modern dengan fitur real-time inventory, payment gateway, dan dashboard analytics.</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="text-[10px] text-slate-500 font-mono">Next.js</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">TypeScript</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">Stripe</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-card group relative rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm overflow-hidden hover:border-brand-500/30 hover:shadow-[0_0_30px_rgba(191,106,69,0.15)] transition-all duration-500 scroll-reveal" data-category="mobile" style="transition-delay:0.1s">
+          <div class="aspect-video overflow-hidden relative">
+            <img src="https://picsum.photos/seed/project-fitness/800/450.jpg" alt="Fitness App" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+            <div class="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <a href="#" class="w-10 h-10 rounded-full bg-brand-500 text-slate-950 flex items-center justify-center hover:shadow-[0_0_15px_rgba(191,106,69,0.5)] transition-all">
+                <iconify-icon icon="lucide:external-link" class="text-sm"></iconify-icon>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-full bg-slate-800/80 backdrop-blur-sm text-white flex items-center justify-center border border-slate-700 hover:border-brand-500/50 transition-all">
+                <iconify-icon icon="lucide:github" class="text-sm"></iconify-icon>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-500/10 rounded border border-emerald-500/20">Mobile</span>
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500 bg-slate-800 rounded border border-slate-700">2024</span>
+            </div>
+            <h3 class="text-lg font-bold font-mono mb-2 group-hover:text-brand-400 transition-colors">FitTrack</h3>
+            <p class="text-xs text-slate-400 font-mono leading-relaxed line-clamp-2">Aplikasi fitness tracking dengan AI-powered workout recommendation dan integrasi wearable device.</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="text-[10px] text-slate-500 font-mono">React Native</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">Node.js</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">MongoDB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-card group relative rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm overflow-hidden hover:border-brand-500/30 hover:shadow-[0_0_30px_rgba(191,106,69,0.15)] transition-all duration-500 scroll-reveal" data-category="design" style="transition-delay:0.2s">
+          <div class="aspect-video overflow-hidden relative">
+            <img src="Img/project.1(figma).png" alt="SaaS Dashboard" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+            <div class="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <a href="https://www.figma.com/design/busyVmJc9cU3ank3UDXDUN/Untitled?m=auto&t=1D3FyXHrpnszMoPf-6" class="w-10 h-10 rounded-full bg-brand-500 text-slate-950 flex items-center justify-center hover:shadow-[0_0_15px_rgba(191,106,69,0.5)] transition-all">
+                <iconify-icon icon="lucide:external-link" class="text-sm"></iconify-icon>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-purple-400 bg-purple-500/10 rounded border border-purple-500/20">Design</span>
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500 bg-slate-800 rounded border border-slate-700">2024</span>
+            </div>
+            <h3 class="text-lg font-bold font-mono mb-2 group-hover:text-brand-400 transition-colors">MetricFlow</h3>
+            <p class="text-xs text-slate-400 font-mono leading-relaxed line-clamp-2">Desain website penjualan sederhana</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="text-[10px] text-slate-500 font-mono">Figma</span>
+              <span class="text-slate-700">·</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <!-- <div class="project-card group relative rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm overflow-hidden hover:border-brand-500/30 hover:shadow-[0_0_30px_rgba(191,106,69,0.15)] transition-all duration-500 scroll-reveal" data-category="web">
+          <div class="aspect-video overflow-hidden relative">
+            <img src="https://picsum.photos/seed/project-social/800/450.jpg" alt="Social Platform" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+            <div class="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <a href="#" class="w-10 h-10 rounded-full bg-brand-500 text-slate-950 flex items-center justify-center hover:shadow-[0_0_15px_rgba(191,106,69,0.5)] transition-all">
+                <iconify-icon icon="lucide:external-link" class="text-sm"></iconify-icon>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-full bg-slate-800/80 backdrop-blur-sm text-white flex items-center justify-center border border-slate-700 hover:border-brand-500/50 transition-all">
+                <iconify-icon icon="lucide:github" class="text-sm"></iconify-icon>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-brand-400 bg-brand-500/10 rounded border border-brand-500/20">Web App</span>
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500 bg-slate-800 rounded border border-slate-700">2023</span>
+            </div>
+            <h3 class="text-lg font-bold font-mono mb-2 group-hover:text-brand-400 transition-colors">ConnectHub</h3>
+            <p class="text-xs text-slate-400 font-mono leading-relaxed line-clamp-2">Platform social networking untuk komunitas kreatif dengan fitur real-time chat dan kolaborasi.</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="text-[10px] text-slate-500 font-mono">Vue.js</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">Socket.io</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">PostgreSQL</span>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Project 5 -->
+        <!-- <div class="project-card group relative rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm overflow-hidden hover:border-brand-500/30 hover:shadow-[0_0_30px_rgba(191,106,69,0.15)] transition-all duration-500 scroll-reveal" data-category="mobile" style="transition-delay:0.1s">
+          <div class="aspect-video overflow-hidden relative">
+            <img src="https://picsum.photos/seed/project-food/800/450.jpg" alt="Food Delivery" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+            <div class="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <a href="#" class="w-10 h-10 rounded-full bg-brand-500 text-slate-950 flex items-center justify-center hover:shadow-[0_0_15px_rgba(191,106,69,0.5)] transition-all">
+                <iconify-icon icon="lucide:external-link" class="text-sm"></iconify-icon>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-500/10 rounded border border-emerald-500/20">Mobile</span>
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500 bg-slate-800 rounded border border-slate-700">2023</span>
+            </div>
+            <h3 class="text-lg font-bold font-mono mb-2 group-hover:text-brand-400 transition-colors">FoodGo</h3>
+            <p class="text-xs text-slate-400 font-mono leading-relaxed line-clamp-2">Aplikasi food delivery dengan live tracking, smart recommendation, dan gamifikasi pemesanan.</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="text-[10px] text-slate-500 font-mono">Flutter</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">Firebase</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">Maps API</span>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Project 6 -->
+        <!-- <div class="project-card group relative rounded-xl border border-slate-800/60 bg-slate-900/50 backdrop-blur-sm overflow-hidden hover:border-brand-500/30 hover:shadow-[0_0_30px_rgba(191,106,69,0.15)] transition-all duration-500 scroll-reveal" data-category="design" style="transition-delay:0.2s">
+          <div class="aspect-video overflow-hidden relative">
+            <img src="https://picsum.photos/seed/project-branding/800/450.jpg" alt="Branding" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+            <div class="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <a href="#" class="w-10 h-10 rounded-full bg-brand-500 text-slate-950 flex items-center justify-center hover:shadow-[0_0_15px_rgba(191,106,69,0.5)] transition-all">
+                <iconify-icon icon="lucide:external-link" class="text-sm"></iconify-icon>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-purple-400 bg-purple-500/10 rounded border border-purple-500/20">Design</span>
+              <span class="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500 bg-slate-800 rounded border border-slate-700">2023</span>
+            </div>
+            <h3 class="text-lg font-bold font-mono mb-2 group-hover:text-brand-400 transition-colors">NeoBank Identity</h3>
+            <p class="text-xs text-slate-400 font-mono leading-relaxed line-clamp-2">Complete branding system untuk startup fintech — logo, design system, dan marketing materials.</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="text-[10px] text-slate-500 font-mono">Illustrator</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">Figma</span>
+              <span class="text-slate-700">·</span>
+              <span class="text-[10px] text-slate-500 font-mono">After Effects</span>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EXPERIENCE ===== -->
+  <!--///dihapus/// -->
+  <!-- ===== TESTIMONIALS ===== -->
+  <!-- ///dihapus/// -->
+  <!-- ===== CONTACT ===== -->
+  <section id="contact" class="relative py-24 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <!-- Left -->
+        <div class="lg:col-span-5 scroll-reveal">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="h-px w-8 bg-brand-500"></div>
+            <span class="text-xs font-mono text-brand-400 uppercase tracking-widest">Kontak Saya</span>
+          </div>
+          <h2 class="text-3xl lg:text-4xl font-bold tracking-tight mb-4">
+            Mari <span class="text-brand-400 text-glow">berkolaborasi</span>
+          </h2>
+          <p class="text-sm text-slate-400 font-mono leading-relaxed mb-10">
+            Punya proyek menarik atau ingin berdiskusi?  Saya selalu terbuka untuk pengalaman baru yang menambah wawasan untuk lebih berkembang.
+          </p>
+
+          <!-- Contact Info -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-4 group">
+              <div class="w-12 h-12 rounded-xl border border-slate-800 bg-slate-900/50 flex items-center justify-center group-hover:border-brand-500/30 transition-colors duration-300">
+                <iconify-icon icon="lucide:mail" class="text-brand-400"></iconify-icon>
+              </div>
+              <div>
+                <div class="text-xs text-slate-500 font-mono uppercase tracking-wider mb-0.5">Email</div>
+                <div class="text-sm text-slate-300">jalalfasli853@gmail.com</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 group">
+              <div class="w-12 h-12 rounded-xl border border-slate-800 bg-slate-900/50 flex items-center justify-center group-hover:border-brand-500/30 transition-colors duration-300">
+                <a href="https://wa.me/081246580977" target="_blank" rel="noopener noreferrer">
+                  <iconify-icon icon="fa6-brands:whatsapp" class="text-brand-400"></iconify-icon>
+                </a>
+              </div>
+              <div>
+                <div class="text-xs text-slate-500 font-mono uppercase tracking-wider mb-0.5">Telepon</div>
+                <div class="text-sm text-slate-300">+62812 4658 0977</div>
+
+              </div>
+            </div>
+            <div class="flex items-center gap-4 group">
+              <div class="w-12 h-12 rounded-xl border border-slate-800 bg-slate-900/50 flex items-center justify-center group-hover:border-brand-500/30 transition-colors duration-300">
+                <iconify-icon icon="lucide:map-pin" class="text-brand-400"></iconify-icon>
+              </div>
+              <div>
+                <div class="text-xs text-slate-500 font-mono uppercase tracking-wider mb-0.5">Lokasi</div>
+                <div class="text-sm text-slate-300">NTT, Indonesia</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <!-- //dihapus// -->
+        </div>
+
+        <!-- Right — Form -->
+         <!-- //dihapus// -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <!-- <footer class="relative border-t border-slate-800/60 py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-slate-950 font-bold text-sm">A</div>
+          <span class="font-mono text-sm text-slate-400">© 2024 Alex Rahman. All rights reserved.</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="#hero" class="text-xs text-slate-500 hover:text-brand-400 font-mono uppercase tracking-wider transition-colors">Home</a>
+          <a href="#about" class="text-xs text-slate-500 hover:text-brand-400 font-mono uppercase tracking-wider transition-colors">Tentang</a>
+          <a href="#projects" class="text-xs text-slate-500 hover:text-brand-400 font-mono uppercase tracking-wider transition-colors">Proyek</a>
+          <a href="#contact" class="text-xs text-slate-500 hover:text-brand-400 font-mono uppercase tracking-wider transition-colors">Kontak</a>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-600 font-mono">
+          <span>Dibuat dengan</span>
+          <iconify-icon icon="lucide:heart" class="text-brand-500 text-sm"></iconify-icon>
+          <span>& kode</span>
+        </div>
+      </div>
+    </div>
+  </footer> -->
+
+  <!-- ===== TOAST CONTAINER ===== -->
+  <div id="toastContainer" class="fixed top-24 right-4 z-[60] flex flex-col gap-2"></div>
+
+  <!-- ===== BACK TO TOP ===== -->
+  <button id="backToTop" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-xl bg-brand-500 text-slate-950 flex items-center justify-center shadow-[0_0_20px_rgba(191,106,69,0.3)] opacity-0 translate-y-4 pointer-events-none transition-all duration-300 hover:shadow-[0_0_30px_rgba(191,106,69,0.5)] hover:scale-110">
+    <iconify-icon icon="lucide:arrow-up" class="text-lg"></iconify-icon>
+  </button>
+
+  <script>
+    // ===== TYPING EFFECT =====
+    const typedTexts = [
+      'PPLG Student',
+      'Junior Developer',
+      'UI/UX Enthusiast',
+      'Ready To Internship'
+    ];
+    let textIndex = 0, charIndex = 0, isDeleting = false;
+    const typedEl = document.getElementById('typedText');
+
+    function typeEffect() {
+      const current = typedTexts[textIndex];
+      if (isDeleting) {
+        typedEl.textContent = current.substring(0, charIndex--);
+        if (charIndex < 0) { isDeleting = false; textIndex = (textIndex + 1) % typedTexts.length; setTimeout(typeEffect, 500); return; }
+      } else {
+        typedEl.textContent = current.substring(0, charIndex++);
+        if (charIndex > current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+      }
+      setTimeout(typeEffect, isDeleting ? 40 : 80);
+    }
+    setTimeout(typeEffect, 1500);
+
+    // ===== NAVBAR SCROLL =====
+    const navbar = document.getElementById('navbar');
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    window.addEventListener('scroll', () => {
+      // Background
+      if (window.scrollY > 50) {
+        navbar.classList.add('bg-slate-950/80', 'backdrop-blur-xl', 'border-b', 'border-slate-800/60');
+      } else {
+        navbar.classList.remove('bg-slate-950/80', 'backdrop-blur-xl', 'border-b', 'border-slate-800/60');
+      }
+
+      // Active link
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 200) current = s.id;
+      });
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+      });
+
+      // Back to top
+      const btn = document.getElementById('backToTop');
+      if (window.scrollY > 600) {
+        btn.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+        btn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+      } else {
+        btn.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+        btn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+      }
+    });
+
+    document.getElementById('backToTop').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===== MOBILE MENU =====
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+
+    menuToggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      menuToggle.classList.toggle('open', menuOpen);
+      if (menuOpen) {
+        mobileMenu.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
+        mobileMenu.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+      } else {
+        mobileMenu.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
+        mobileMenu.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+      }
+    });
+
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => {
+        menuOpen = false;
+        menuToggle.classList.remove('open');
+        mobileMenu.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
+        mobileMenu.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+      });
+    });
+
+    // ===== SCROLL REVEAL =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          // Skill bars
+          entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+            bar.classList.add('active');
+          });
+          // Counters
+          entry.target.querySelectorAll('[data-count]').forEach(el => {
+            animateCounter(el);
+          });
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
+      observer.observe(el);
+    });
+
+    // Also observe hero stats
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const parent = el.closest('.scroll-reveal') || el.parentElement.parentElement;
+      if (!parent.classList.contains('scroll-reveal')) {
+        // Hero stats - observe the parent
+      }
+    });
+
+    // Add is-visible styles
+    const style = document.createElement('style');
+    style.textContent = `.scroll-reveal.is-visible { opacity: 1 !important; transform: translateY(0) !important; }`;
+    document.head.appendChild(style);
+
+    // ===== COUNTER ANIMATION =====
+    function animateCounter(el) {
+      if (el.dataset.animated) return;
+      el.dataset.animated = 'true';
+      const target = parseInt(el.dataset.count);
+      const duration = 2000;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target) + '+';
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    // Observe hero stats
+    const heroStats = document.querySelector('#hero .flex.items-center.justify-center.gap-8');
+    if (heroStats) {
+      const statObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('[data-count]').forEach(el => animateCounter(el));
+          }
+        });
+      }, { threshold: 0.5 });
+      statObserver.observe(heroStats);
+    }
+
+    // ===== PROJECT FILTER =====
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      // Style
+      updateFilterStyles();
+
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateFilterStyles();
+
+        projectCards.forEach(card => {
+          const cat = card.dataset.category;
+          if (filter === 'all' || cat === filter) {
+            card.classList.remove('hidden-card');
+            card.style.position = 'relative';
+            card.style.opacity = '1';
+            card.style.transform = 'scale(1)';
+            card.style.pointerEvents = 'auto';
+          } else {
+            card.classList.add('hidden-card');
+          }
+        });
+      });
+    });
+
+    function updateFilterStyles() {
+      filterBtns.forEach(b => {
+        if (b.classList.contains('active')) {
+          b.style.background = '#bf6a45';
+          b.style.color = '#0a0a0a';
+          b.style.boxShadow = '0 0 15px rgba(191,106,69,0.3)';
+        } else {
+          b.style.background = 'transparent';
+          b.style.color = '#64748b';
+          b.style.boxShadow = 'none';
+          b.style.border = '1px solid #1e1e1e';
+        }
+      });
+    }
+    updateFilterStyles();
+
+    // ===== CONTACT FORM =====
+    const contactForm = document.getElementById('contactForm');
+    const formMessage = document.getElementById('formMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Get values
+      const name = contactForm.name.value.trim();
+      const email = contactForm.email.value.trim();
+      const subject = contactForm.subject.value.trim();
+      const message = contactForm.message.value.trim();
+
+      if (!name || !email || !subject || !message) {
+        showFormMessage('Mohon isi semua field yang wajib diisi.', 'error');
+        return;
+      }
+
+      // Simulate sending
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<iconify-icon icon="lucide:loader-2" class="text-sm animate-spin"></iconify-icon><span>Mengirim...</span>';
+
+      setTimeout(() => {
+        showFormMessage('Pesan berhasil dikirim! Saya akan segera merespons. 🎉', 'success');
+        contactForm.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Kirim Pesan</span><iconify-icon icon="lucide:send" class="text-sm"></iconify-icon>';
+        showToast('Pesan terkirim!', 'success');
+      }, 2000);
+    });
+
+    function showFormMessage(msg, type) {
+      formMessage.classList.remove('hidden');
+      formMessage.className = 'mt-4 p-3 rounded-lg text-xs font-mono ' + (type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20');
+      formMessage.textContent = msg;
+      setTimeout(() => formMessage.classList.add('hidden'), 5000);
+    }
+
+    function showToast(msg, type) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast flex items-center gap-3 px-5 py-3 rounded-xl border backdrop-blur-xl text-xs font-mono ' +
+        (type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400');
+      toast.innerHTML = `<iconify-icon icon="${type === 'success' ? 'lucide:check-circle' : 'lucide:alert-circle'}"></iconify-icon><span>${msg}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%)'; toast.style.transition = 'all 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 4000);
+    }
+
+    // ===== MAGNETIC BUTTON EFFECT =====
+    document.querySelectorAll('.magnetic-btn').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translate(0, 0)';
+      });
+    });
+
+    // ===== SMOOTH SCROLL FOR ALL ANCHOR LINKS =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
